@@ -1,8 +1,12 @@
 import React from "react";
+import axios from "axios";
+import { serverUrl } from "../App";
 import { motion } from "motion/react";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../utils/firebase";
+
+
 function Auth() {
   const handleGoogleauth = async () => {
     try {
