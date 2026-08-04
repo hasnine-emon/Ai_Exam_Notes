@@ -5,9 +5,13 @@ import { motion } from "motion/react";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../utils/firebase";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 
 function Auth() {
+  const dispatch = useDispatch()
+
   const handleGoogleauth = async () => {
     try {
       const response = await signInWithPopup(auth, provider);
@@ -17,8 +21,7 @@ function Auth() {
        const result = await axios.post(serverUrl + "/api/auth/google" , {name , email},{
         withCredentials:true
       })
-      console.log(result.data)
-      
+      dispatch(setUserData(result.data)) 
     } catch (error) {
        console.log("Error code:", error.code);
     console.log("Error message:", error.message);
