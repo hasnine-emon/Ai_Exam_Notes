@@ -1,5 +1,5 @@
 import express from "express"
-import { isAuth } from "../middlewares/auth.middleware.js"
+import  isAuth from "../middleware/isAuth.js"
 import { generateNotes } from "../controllers/generate.controller.js"
 
 
