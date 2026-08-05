@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 import userRouter from "./routes/user.route.js"
 dotenv.config()
+import notesRouter from "./routes/generate.route.js"
+
 
 const PORT = process.env.PORT || 5000
 const app=express()
@@ -24,6 +26,7 @@ app.get("/",(req,res)=>{
 })
 app.use("/api/auth",authRouter)
 app.use("/api/user", userRouter)
+app.use("/api/notes", notesRouter)
 
 app.listen(PORT,()=>{
    console.log(`Server is runing ${PORT}`)
