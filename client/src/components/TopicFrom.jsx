@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import { motion } from "motion/react"
+import { generateNotes } from '../services/api';
+
 
 function TopicFrom({setResult, setLoading, loading , setError}) {
     const [topic, setTopic] = useState("");
@@ -8,6 +10,32 @@ function TopicFrom({setResult, setLoading, loading , setError}) {
     const [revisionMode, setRevisionMode] = useState(false);
 const [includeDiagram, setIncludeDiagram] = useState(false);
 const [includeChart, setIncludeChart] = useState(false);
+
+const handleSubmit = async () => {
+  if (!topic.trim()) {
+    setError("Topic is required");
+    return;
+  }
+  setError("");
+  setLoading(true);
+  setResult(null);
+  try{
+    const result = await generateNotes({
+      topic,
+      classLevel,
+      examType,
+      revisionMode,
+      includeDiagram,
+      includeChart});
+    setResult(result.data);
+    setLoading(false);
+
+  }catch (error) {
+    console.log(error);
+    setError("Failed to generate notes. Please try again.");
+    setLoading(false);
+  }
+}
   return (
     <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -68,6 +96,7 @@ const [includeChart, setIncludeChart] = useState(false);
       </div>
 
       <motion.button
+      onClick={handleSubmit}
       whileHover={!loading ? {scale: 1.02 } : {}}
       whileTap={!loading ? {scale: 0.95 } : {}}
       disabled={loading}

@@ -20,9 +20,9 @@ export const generateNotes = async (req, res) => {
         }
         const user = await UserModel.findById(req.userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(400).json({ message: "User not found" });
         }
-        if (user.credits <= 0) {
+        if (user.credits < 10) {
             user.isCreditAvailable = false;
             await user.save();
             return res.status(403).json({ 
@@ -59,9 +59,10 @@ export const generateNotes = async (req, res) => {
         }
         user.notes.push(notes._id);
         await user.save();
-        res.status(200).json({ data : aiResponse,
+           return res.status(200).json({ 
+            data : aiResponse,
             notesId: notes._id,
-            creditsLeft: user.credits,
+            creditsLeft: user.credits
          });
     } catch (error) {
         console.error(error);

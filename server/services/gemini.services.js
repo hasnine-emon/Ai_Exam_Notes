@@ -1,4 +1,4 @@
-const Gemini_URL ="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview:generateContent";
+const Gemini_URL ="https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 export const generateGeminiResponse = async (prompt) => {
  try{
    const response = await fetch(`${Gemini_URL}?key=${process.env.GEMINI_API_KEY}`, {
@@ -24,7 +24,7 @@ export const generateGeminiResponse = async (prompt) => {
     throw new Error(err);
 }
     const data = await response.json();
-    const Text = data.candidates[0].content[0].text;
+    const Text = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!Text) {
         throw new Error("No text returned from Gemini");
     }
@@ -32,7 +32,6 @@ export const generateGeminiResponse = async (prompt) => {
     const cleanText = Text
     .replace(/```json/g, "")
     .replace(/```/g, "")
-    .replace(/\\n/g, "\n")
     .trim();
     return JSON.parse(cleanText);
  }catch (error) {
