@@ -1,6 +1,7 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { motion } from "motion/react"
 import { generateNotes } from '../services/api';
+
 
 
 function TopicFrom({setResult, setLoading, loading , setError}) {
@@ -8,8 +9,9 @@ function TopicFrom({setResult, setLoading, loading , setError}) {
     const [classLevel, setClassLevel] = useState("");
     const [examType, setExamType] = useState("");
     const [revisionMode, setRevisionMode] = useState(false);
-const [includeDiagram, setIncludeDiagram] = useState(false);
-const [includeChart, setIncludeChart] = useState(false);
+    const [includeDiagram, setIncludeDiagram] = useState(false);
+    const [includeChart, setIncludeChart] = useState(false);
+
 
 const handleSubmit = async () => {
   if (!topic.trim()) {
@@ -27,8 +29,10 @@ const handleSubmit = async () => {
       revisionMode,
       includeDiagram,
       includeChart});
-    setResult(result.data);
-    setLoading(false);
+      setResult(result.data);
+      setLoading(false);
+
+        
 
   }catch (error) {
     console.log(error);
@@ -36,6 +40,40 @@ const handleSubmit = async () => {
     setLoading(false);
   }
 }
+
+useEffect(()=>{
+  if(!loading){
+    setProgress(0);
+    setProgressText("")
+    return;
+  }
+  let value = 0;
+
+  const interval = setInterval(()=>{
+    value += Math.random() * 8
+
+     if (value >= 95) {
+      value = 95;
+      setProgressText("Almost done…");
+      clearInterval(interval);
+    } else if (value > 70) {
+      setProgressText("Finalizing notes…");
+    } else if (value > 40) {
+      setProgressText("Processing content…");
+    } else {
+      setProgressText("Generating notes…");
+    }
+
+    setProgress(Math.floor(value))
+
+  },700)
+
+  return () => clearInterval(interval);
+
+
+  },[loading])
+
+
   return (
     <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -115,6 +153,7 @@ const handleSubmit = async () => {
     {loading ? "Generate Notes..." : "Generate Notes"}
 
     </motion.button>
+
 
     </motion.div>
   )

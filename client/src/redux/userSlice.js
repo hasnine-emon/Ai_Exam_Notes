@@ -11,6 +11,7 @@ const userSlice = createSlice({
             state.userData = action.payload
 
         }
+
     }
 })
 
