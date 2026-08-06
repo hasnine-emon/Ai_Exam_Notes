@@ -1,6 +1,8 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { motion } from "motion/react"
 import { generateNotes } from '../services/api';
+import { useDispatch } from 'react-redux';
+import { updateCredits } from '../redux/userSlice';
 
 
 function TopicFrom({setResult, setLoading, loading , setError}) {
@@ -8,8 +10,11 @@ function TopicFrom({setResult, setLoading, loading , setError}) {
     const [classLevel, setClassLevel] = useState("");
     const [examType, setExamType] = useState("");
     const [revisionMode, setRevisionMode] = useState(false);
-const [includeDiagram, setIncludeDiagram] = useState(false);
-const [includeChart, setIncludeChart] = useState(false);
+    const [includeDiagram, setIncludeDiagram] = useState(false);
+    const [includeChart, setIncludeChart] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [progressText, setProgressText] = useState("");
+    const dispatch = useDispatch()
 
 const handleSubmit = async () => {
   if (!topic.trim()) {
@@ -29,6 +34,16 @@ const handleSubmit = async () => {
       includeChart});
     setResult(result.data);
     setLoading(false);
+    setClassLevel("")
+    setTopic("")
+    setExamType("")
+    setIncludeChart(false)
+    setRevisionMode(false)
+    setIncludeDiagram(false)
+
+    if(typeof result.creditsLeft === "number"){
+      dispatch(updateCredits(result.creditsLeft))
+    } 
 
   }catch (error) {
     console.log(error);
@@ -36,6 +51,40 @@ const handleSubmit = async () => {
     setLoading(false);
   }
 }
+useEffect(() => {
+  if (!loading) {
+    setProgress(0);
+    setProgressText("");
+    return;
+  }
+
+  let value = 0;
+
+  const interval = setInterval(() => {
+    value += Math.random() * 8;
+
+    if (value >= 95) {
+      value = 95;
+      setProgressText("Almost done...");
+      clearInterval(interval);
+    } else if (value > 70) {
+      setProgressText("Finalizing notes...");
+    } else if (value > 40) {
+      setProgressText("Processing content...");
+    } else {
+      setProgressText("Generating notes...");
+    }
+
+    setProgress(Math.floor(value))
+
+  }, 700)
+
+  return () => clearInterval(interval);
+
+
+}, [loading]);
+
+
   return (
     <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -115,6 +164,31 @@ const handleSubmit = async () => {
     {loading ? "Generate Notes..." : "Generate Notes"}
 
     </motion.button>
+
+    {loading && (
+  <div className='mt-4 space-y-2'>
+
+    <div className='w-full h-2 rounded-full bg-white/10 overflow-hidden'>
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: `${progress}%` }}
+        transition={{ ease: "easeOut", duration: 0.6 }}
+        className="h-full bg-gradient-to-r from-green-400 via-emerald-400 to-green-500">
+
+        </motion.div>
+
+    </div>
+
+    <div className='flex justify-between text-xs text-gray-300'>
+      <span>{progressText}</span>
+      <span>{progress}%</span>
+    </div>
+
+    <p className="text-xs text-gray-400 text-center">
+      This may take up to 2–5 minutes. Please don't close or refresh the page.
+    </p>
+   </div>
+)}
 
     </motion.div>
   )
