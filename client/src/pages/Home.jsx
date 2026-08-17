@@ -46,7 +46,12 @@ const Home = () => {
                 flow diagram and revision-ready content using AI - faster, clener and smart.
 
             </motion.p>
-            <motion.button
+           
+            
+
+          </motion.div>
+
+           <motion.button
             onClick={()=>navigate("/notes")}
                         
                         whileHover={{
@@ -64,9 +69,6 @@ const Home = () => {
                         
                         Get Started
                       </motion.button>
-            
-
-          </motion.div>
         </div>
 
         <motion.div
