@@ -31,7 +31,7 @@ const Home = () => {
                 textShadow: "0 18px 40px rgba(0,0,0,0.25)",
               }}
             >
-              Create Smart <br /> AI Notes in Seconds
+               AI-Powered <br /> Notes for Every Students
             </motion.h1>
             <motion.p whileHover={{ y: -2 }}
             className=' mt-6 max-w-xl text-lg
@@ -46,7 +46,12 @@ const Home = () => {
                 flow diagram and revision-ready content using AI - faster, clener and smart.
 
             </motion.p>
-            <motion.button
+           
+            
+
+          </motion.div>
+
+           <motion.button
             onClick={()=>navigate("/notes")}
                         
                         whileHover={{
@@ -64,9 +69,6 @@ const Home = () => {
                         
                         Get Started
                       </motion.button>
-            
-
-          </motion.div>
         </div>
 
         <motion.div
@@ -94,14 +96,10 @@ const Home = () => {
       {/* bottom */}
       <section className='max-w-6xl mx-auto px-8 py-32 grid grid-cols-1
       md:grid-cols-4 gap-10'>
-        <Feature icon="📘" tilte="Exam Notes" des="High-yield exam-oriented notes
-        with revition points."/>
-        <Feature icon="📁" tilte="Project Notes" des="Well-structured content for
-        assignments and projects."/>
-        <Feature icon="📊" tilte="Diagrams" des="Auto-generated visual diagrams for
-        clarite."/>
-        <Feature icon="⬇️" tilte="PDF Download" des="Dwnload clean, printabe PDFs
-        instantly."/>
+        <Feature icon="📝" tilte="Smart Study Notes" des="Create well-organized and easy-to-understand study materials."/>
+        <Feature icon="📚" tilte="Project Notes" des="Well-structured notes for projects and assignments.."/>
+        <Feature icon="📈" tilte="Diagrams" des="Clear visual diagrams to understand topics easily."/>
+        <Feature icon="⬇️" tilte="PDF Download" des="Download clean, ready-to-print PDF notes.."/>
 
       </section>
       <Footer/>

@@ -22,7 +22,7 @@ export const generateNotes = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
-        if (user.credits < 1) {
+        if (user.credits < 10) {
             user.isCreditAvailable = false;
             await user.save();
             return res.status(403).json({ 
@@ -50,7 +50,7 @@ export const generateNotes = async (req, res) => {
             content: aiResponse
         });
 
-        user.credits -= 1;
+        user.credits -= 10;
         if (user.credits <= 0) {
             user.isCreditAvailable = false;
         }
