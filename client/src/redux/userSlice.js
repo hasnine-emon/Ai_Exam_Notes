@@ -16,6 +16,7 @@ const userSlice = createSlice({
                 state.userData.credits = action.payload
             }
         }
+
     }
 })
 

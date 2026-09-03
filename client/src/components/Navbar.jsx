@@ -55,8 +55,8 @@ function Navbar() {
     onClick={()=>{setShowCredits(!showCredits);setShowProfile(false)}}
     whileHover={{scale:1.07}}
     whileTap={{scale:0.97}}
-    className='flex items-center gap-1
-        px-2 py-2 rounded-full
+    className='flex items-center justify-center gap-1
+        px-4 py-2 rounded-full
         bg-white/10
         border border-white/20
         text-white text-sm
@@ -64,15 +64,17 @@ function Navbar() {
         cursor-pointer'>
       <span className='text-xl'>🔷</span>
       <span>{credits}</span>
-      <motion.span whileHover={{scale:1.1}}
+      <motion.span whileHover={{scale:1.2}}
     whileTap={{scale:0.97}}
     className='ml-2 h-5 w-5 flax items-center justify-center
     rounded-full bg-white  text-xs font-bold'
     >
         ➕
+
       </motion.span>
       
     </motion.div>
+
      <AnimatePresence>
     {showCredits &&
      

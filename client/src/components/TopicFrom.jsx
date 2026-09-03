@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { updateCredits } from '../redux/userSlice';
 
 
+
 function TopicFrom({setResult, setLoading, loading , setError}) {
     const [topic, setTopic] = useState("");
     const [classLevel, setClassLevel] = useState("");
@@ -42,7 +43,7 @@ const handleSubmit = async () => {
     setIncludeDiagram(false)
 
     if(typeof result.creditsLeft === "number"){
-      dispatch(updateCredits(result.creditsLeft))
+      dispatch(updateCredits(result.creditsLeft));
     } 
 
   }catch (error) {
@@ -105,7 +106,7 @@ useEffect(() => {
             placeholder-gray-400
             text-white
             focus:outline-none focus:ring-white/30' 
-            placeholder='Enter topic (e.g. web Devlopement)'
+            placeholder='Enter topic (e.g. web Development)'
             onChange={(e)=>setTopic(e.target.value)}
             value={topic}
             />
