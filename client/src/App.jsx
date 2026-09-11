@@ -1,11 +1,11 @@
-import React, { useEffect } from "react"
+import  { useEffect } from "react"
 import { Navigate, Routes, Route } from "react-router-dom"
 import Home from "./pages/Home"
 import Auth from "./pages/Auth"
 import { getCurrentUser } from "./services/api"
 import { useDispatch, useSelector } from "react-redux"
 import Notes from "./pages/Notes"
-import Pricing from "./pages/pricing"
+import Pricing from "./pages/pricing."
 export const serverUrl = "http://localhost:8000"
 
 function App() {
