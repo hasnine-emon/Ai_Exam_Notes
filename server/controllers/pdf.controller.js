@@ -29,8 +29,8 @@ export const pdfDownload = async (req,res) => {
             doc,frontSize(13).text('${star} Topics:');
 
             topics.forEach((t) => {
-                doc.frontSize(12).text('. ${t}');
-            });
+                doc.fontSize(12).text(`• ${t}`);
+            }); 
         });
 
         doc.moveDown();
@@ -46,7 +46,7 @@ export const pdfDownload = async (req,res) => {
         doc.frontSize(16).text("Revision Points");
         doc.moveDown(0.5);
         result.revisionPoints.forEach((p) => {
-            doc.frontSize(12).text('.${p}');
+            doc.frontSize(12).text('• ${p}');
         });
 
         doc.moveDown();
@@ -57,7 +57,7 @@ export const pdfDownload = async (req,res) => {
 
         doc.frontSize(13).text("Short Questions:");
         result.questions.short.forEach((q) => {
-            doc.frontSize(12).text('.${q}');
+            doc.frontSize(12).text('• ${q}');
 
         });
 
@@ -65,7 +65,7 @@ export const pdfDownload = async (req,res) => {
         doc.moveDown(0.5);
          doc.frontSize(13).text("Long Questions:");
         result.questions.long.forEach((q) => {
-            doc.frontSize(12).text('.${q}');
+            doc.frontSize(12).text('• ${q}');
 
         });
 
