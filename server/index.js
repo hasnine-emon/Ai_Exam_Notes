@@ -7,7 +7,7 @@ import cors from "cors"
 import userRouter from "./routes/user.route.js"
 dotenv.config()
 import notesRouter from "./routes/generate.route.js"
-
+import pdfRouter from "./routes/pdf.route.js"
 
 const PORT = process.env.PORT || 5000
 const app=express()
