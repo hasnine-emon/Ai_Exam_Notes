@@ -1,12 +1,16 @@
-import React, { useEffect } from "react"
+import  { useEffect } from "react"
 import { Navigate, Routes, Route } from "react-router-dom"
 import Home from "./pages/Home"
 import Auth from "./pages/Auth"
 import { getCurrentUser } from "./services/api"
 import { useDispatch, useSelector } from "react-redux"
 import Notes from "./pages/Notes"
+<<<<<<< HEAD
 import History from "./pages/History"
 import Pricing from "./pages/pricing"
+=======
+import Pricing from "./pages/pricing."
+>>>>>>> origin/emon
 export const serverUrl = "http://localhost:8000"
 
 function App() {
