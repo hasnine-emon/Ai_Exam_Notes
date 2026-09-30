@@ -25,11 +25,26 @@ const cleanMermaidChart = (diagram) => {
 };
 
 
+const autoFixNodes = (diagram) => {
+  let index = 0;
+  const used = new Map();
 
-  
+  return diagram.replace(/\[(.*?)\]/g, (match, label) => {
+    
+    const key = label.trim();
 
+    if (used.has(key)) {
+      return used.get(key);
+    }
 
+    index++;
+    const id = `N${index}`;
+    const node = `${id}["${key}"]`;
 
+    used.set(key, node);
+    return node;
+  });
+};
 
 
 
