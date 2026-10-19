@@ -5,6 +5,6 @@ import { pdfDownload } from "../controllers/pdf.controller.js"
 const pdfRouter = express.Router()
 
 
-pdfRouter.post("/generate-notes",isAuth,pdfDownload)
+pdfRouter.post("/generate-pdf",isAuth,pdfDownload)
 
 export default pdfRouter

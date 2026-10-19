@@ -16,62 +16,62 @@ export const pdfDownload = async (req,res) => {
 
         doc.pipe(res)
         //Title
-        doc.frontSize(20).text("ExamNotes AI", { align: "center"});
+        doc.fontSize(20).text("ExamNotes AI", { align: "center"});
         doc.moveDown();
-        doc.frontSize(14).text('Importance: ${result.importance}');
+        doc.fontSize(14).text(`Importance: ${result.importance}`);
         doc.moveDown();
 
         //Sub Topics
-        doc.frontSize(16).text("Sub Topics");
+        doc.fontSize(16).text("Sub Topics");
         doc.moveDown(0.5);
-        object.entries(result.subTopics).forEach(([star, topics]) =>{
+        Object.entries(result.subTopics).forEach(([star, topics]) =>{
             doc.moveDown(0.5);
-            doc,frontSize(13).text('${star} Topics:');
+            doc.fontSize(13).text(`${star} Topics:`);
 
             topics.forEach((t) => {
                 doc.fontSize(12).text(`• ${t}`);
-            }); 
+            });   
         });
 
         doc.moveDown();
 
         //Notes
-        doc.frontSize(16).text("Notes");
+        doc.fontSize(16).text("Notes");
         doc.moveDown(0.5);
-        doc.frontSize(12).text(result.notes.replace(/[#*]/g, ""));
+        doc.fontSize(12).text(result.notes.replace(/[#*]/g, ""));
 
         doc.moveDown();
 
         //Revision Points
-        doc.frontSize(16).text("Revision Points");
+        doc.fontSize(16).text("Revision Points");
         doc.moveDown(0.5);
         result.revisionPoints.forEach((p) => {
-            doc.frontSize(12).text('• ${p}');
+            doc.fontSize(12).text(`• ${p}`);
         });
 
         doc.moveDown();
 
         //Questions
-        doc.frontSize(16).text("Important Questions");
+        doc.fontSize(16).text("Important Questions");
         doc.moveDown(0.5);
 
-        doc.frontSize(13).text("Short Questions:");
+        doc.fontSize(13).text("Short Questions:");
         result.questions.short.forEach((q) => {
-            doc.frontSize(12).text('• ${q}');
+            doc.fontSize(12).text(`• ${q}`);
 
         });
 
 
         doc.moveDown(0.5);
-         doc.frontSize(13).text("Long Questions:");
+         doc.fontSize(13).text("Long Questions:");
         result.questions.long.forEach((q) => {
-            doc.frontSize(12).text('• ${q}');
+            doc.fontSize(12).text(`• ${q}`);
 
         });
 
         doc.moveDown(0.5);
-        doc.frontSize(13).text("Diagram Questions:");
-        doc.frontSize(12).text(result.questions.diagram);
+        doc.fontSize(13).text("Diagram Questions:");
+        doc.fontSize(12).text(result.questions.diagram);
 
         doc.end();
 
