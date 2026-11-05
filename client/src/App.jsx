@@ -5,7 +5,7 @@ import Auth from "./pages/Auth"
 import { getCurrentUser } from "./services/api"
 import { useDispatch, useSelector } from "react-redux"
 import Notes from "./pages/Notes"
-import Pricing from "./pages/pricing."
+import Pricing from "./pages/Pricing"
 export const serverUrl = "http://localhost:8000"
 
 function App() {
