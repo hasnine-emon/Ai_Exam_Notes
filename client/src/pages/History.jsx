@@ -66,7 +66,7 @@ function History() {
    bg-black/80 backdrop-blur-xl
   border border-white/10
    px-8 py-6 items-start
-  flex justify-between md:items-center gap-4 flex-col md:flex-wrap
+  flex justify-between md:items-center gap-4 md:flex-wrap
  shadow-[0_20px_45px_rgba(0,0,0,0.6)]"
       >
         <div onClick={() => navigate("/")} className='cursor-pointer'> <h1
@@ -98,7 +98,6 @@ function History() {
             </motion.span>
 
           </button>
-          <button className='lg:hidden text-white text-2xl'>< GiHamburgerMenu /></button>
 
         </div>
 
