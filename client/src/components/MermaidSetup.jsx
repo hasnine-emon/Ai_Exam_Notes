@@ -25,18 +25,26 @@ const cleanMermaidChart = (diagram) => {
 };
 
 
-const autoFixBadNodes = (diagram) => {
+const autoFixNodes = (diagram) => {
   let index = 0;
+  const used = new Map();
 
-  return diagram.replace(/\[(.*?)\]/g, (_, label) => {
+  return diagram.replace(/\[(.*?)\]/g, (match, label) => {
+    
+    const key = label.trim();
+
+    if (used.has(key)) {
+      return used.get(key);
+    }
+
     index++;
+    const id = `N${index}`;
+    const node = `${id}["${key}"]`;
 
-    return `N${index}[${label}]`;
-   
+    used.set(key, node);
+    return node;
   });
 };
-
-
 
 
 
@@ -57,7 +65,7 @@ function MermaidSetup({diagram}) {
           .substring(2, 9)}`;
 
 
-        const safeChart = autoFixBadNodes(cleanMermaidChart(diagram));
+        const safeChart = autoFixNodes(cleanMermaidChart(diagram));
 
         const { svg } = await mermaid.render(uniqueId, safeChart);
 

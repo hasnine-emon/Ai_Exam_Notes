@@ -18,7 +18,7 @@ function RechartSetUp({ charts }) {
 
                         <ResponsiveContainer width="100%" height="100%">
                             {chart.type === "bar" && (
-                                <BarChart datakey={chart.data}>
+                                <BarChart data={chart.data}>
                                     <XAxis dataKey="name" />
                                     <YAxis />
                                     <Tooltip />
@@ -38,7 +38,7 @@ function RechartSetUp({ charts }) {
 
 
                             {chart.type === "line" && (
-                                <LineChart datakey={chart.data}>
+                                <LineChart data={chart.data}>
                                     <XAxis dataKey="name" />
                                     <YAxis />
                                     <Tooltip />

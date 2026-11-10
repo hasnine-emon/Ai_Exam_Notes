@@ -95,13 +95,13 @@ function Auth() {
   bg-gradient-to-br from-gray-700 via-gray-500/80 to-gray-700
   bg-clip-text text-transparent"
           >
-            You get <span className="font-semibold">50 FREE credits</span> to
+            You get <span className="font-semibold"> FREE credits</span> to
             create exam notes, project notes, charts, graphs and download clean
             PDFs - instantly using AI.
           </p>
           <p className="mt-4 text-sm text-gray-500">
             {" "}
-            Start with 50 free credits Upgrade anytime for more credits Instant
+            Start with  free credits Upgrade anytime for more credits Instant
             access
           </p>
         </motion.div>
@@ -109,31 +109,29 @@ function Auth() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <Feature
             icon="🎁"
-            title="50 free credits"
-            des="Start with 50 credits to generate
+            title="free credits"
+            des="Start with free credits to generate
   notes without paying."
           />
           <Feature
-            icon="📑"
-            title="Exam Notes"
-            des="High-yield, revision-ready
-  exam-oriented notes."
+            icon="📝"
+            title="Smart Study Notes" 
+            des="Create well-organized and easy-to-understand study materials."
           />
           <Feature
-            icon="🗃️"
+            icon="📚"
             title="Project Notes"
-            des="Well-structured documentation for
-   assignment & projects."
+            des="Well-structured notes for projects and assignment."
           />
           <Feature
-            icon="📊"
-            title="Charts & Graphs"
-            des="Auto-generated diagrams, charts and
-   flow graphs."
+            icon="📈"
+            title="Diagrams"
+            des="Clear visual diagrams to understand topics easily." 
           />
+
           <Feature
             icon="⬇️"
-            title="Free PDF Download"
+            title="PDF Download"
             des="Download clean, printable PDFs
    instantly."
           />
