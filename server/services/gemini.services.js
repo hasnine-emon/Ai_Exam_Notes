@@ -15,7 +15,11 @@ export const generateGeminiResponse = async (prompt) => {
                         }
                     ]
                 }
-            ]
+            ],
+         
+            generationConfig: {
+                responseMimeType: "application/json"
+            }
         })
     })
 
@@ -29,11 +33,16 @@ export const generateGeminiResponse = async (prompt) => {
         throw new Error("No text returned from Gemini");
     }
 
-    const cleanText = Text
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
-    return JSON.parse(cleanText);
+  
+    try {
+        return JSON.parse(Text);
+    } catch {
+        const cleanText = Text
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+        return JSON.parse(cleanText);
+    }
  }catch (error) {
     console.error("Error generating Gemini response:", error.message);
     throw new Error("Failed to generate response from Gemini API");

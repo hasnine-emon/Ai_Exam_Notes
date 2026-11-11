@@ -49,7 +49,7 @@ const verifyGoogleToken = async (idToken) => {
 const hashOtp = (email, otp) =>
     crypto.createHmac("sha256", process.env.JWT_SECRET).update(`${email}:${otp}`).digest("hex")
 
-// transporter function er bhitore banano hoyeche, karon dotenv index.js e pore load hoy
+// OTP email pathanor jonno
 const sendOtpMail = async (to, otp) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -113,8 +113,7 @@ const checkOtp = async (email, otp) => {
     return { user }
 }
 
-// ===================== GOOGLE =====================
-// Google diye login. Account na thakle register korte bolbe (auto-create hobe na).
+// ===================== GOOGLE AUTH =====================
 export const googleAuth = async (req, res) => {
     try {
         const { idToken } = req.body

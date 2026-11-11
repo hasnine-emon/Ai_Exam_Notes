@@ -25,8 +25,6 @@ const userSchema = new mongoose.Schema({
         default:[]
     },
 
-    // ---- NEW: email/password login + forgot password OTP ----
-    // Google diye register hole password thakbe na (ta thik ache)
     password:{
         type:String,
         select:false
@@ -46,7 +44,7 @@ const userSchema = new mongoose.Schema({
     }
 },{
     timestamps : true,
-    // password / otp kokhono frontend e jabe na
+    // toJSON is used to modify the output of the document when it is converted to JSON. In this case, it removes sensitive fields like password and reset OTP information from the output.
     toJSON:{
         transform:(doc, ret) => {
             delete ret.password

@@ -4,22 +4,48 @@ import { generateNotes } from '../services/api';
 import { useDispatch } from 'react-redux';
 import { updateCredits } from '../redux/userSlice';
 
-
+const SUBJECT = "Database Management System";
+const CHAPTERS = [
+  { id: 1, name: "Introduction to Database System (DBMS)" },
+  { id: 2, name: "Relational Model and Schema" },
+  { id: 3, name: "ACID Properties" },
+  { id: 4, name: "Integrity Constraints" },
+  { id: 5, name: "Entity-Relationship (ER) Model" },
+  { id: 6, name: "Generalization, Specialization and Cardinality" },
+  { id: 7, name: "Entity-Relationship Model: Design and Constraints" },
+  { id: 8, name: "Normalization" },
+  { id: 9, name: "SQL Joins" },
+  { id: 10, name: "Transaction Processing Concepts" },
+  { id: 11, name: "Schedules and Serializability" },
+  { id: 12, name: "Failure Classification and Recovery" },
+];
+const EXAM_TYPES = [
+  { value: "CT", hint: "Definitions +  questions with answers" },
+  { value: "Quiz", hint: "25 MCQ with answers" },
+  { value: "Mid Term", hint: "Definitions + medium questions " },
+  { value: "Final", hint: "Many definitions +  medium and hard questions with answers" },
+];
 
 function TopicFrom({setResult, setLoading, loading , setError}) {
-    const [topic, setTopic] = useState("");
-    const [classLevel, setClassLevel] = useState("");
+    const [selectedChapters, setSelectedChapters] = useState([]);
     const [examType, setExamType] = useState("");
-    const [revisionMode, setRevisionMode] = useState(false);
-    const [includeDiagram, setIncludeDiagram] = useState(false);
-    const [includeChart, setIncludeChart] = useState(false);
     const [progress, setProgress] = useState(0);
     const [progressText, setProgressText] = useState("");
     const dispatch = useDispatch()
 
+const toggleChapter = (id) => {
+  setSelectedChapters((prev) =>
+    prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+  );
+};
+
 const handleSubmit = async () => {
-  if (!topic.trim()) {
-    setError("Topic is required");
+  if (selectedChapters.length === 0) {
+    setError("Select at least one chapter");
+    return;
+  }
+  if (!examType) {
+    setError("Select an exam type");
     return;
   }
   setError("");
@@ -27,20 +53,12 @@ const handleSubmit = async () => {
   setResult(null);
   try{
     const result = await generateNotes({
-      topic,
-      classLevel,
-      examType,
-      revisionMode,
-      includeDiagram,
-      includeChart});
+      chapters: selectedChapters,
+      examType});
     setResult(result.data);
     setLoading(false);
-    setClassLevel("")
-    setTopic("")
+    setSelectedChapters([])
     setExamType("")
-    setIncludeChart(false)
-    setRevisionMode(false)
-    setIncludeDiagram(false)
 
     if(typeof result.creditsLeft === "number"){
       dispatch(updateCredits(result.creditsLeft));
@@ -48,7 +66,7 @@ const handleSubmit = async () => {
 
   }catch (error) {
     console.log(error);
-    setError("Failed to generate notes. Please try again.");
+    setError("Failed to generate questions. Please try again.");
     setLoading(false);
   }
 }
@@ -62,18 +80,18 @@ useEffect(() => {
   let value = 0;
 
   const interval = setInterval(() => {
-    value += Math.random() * 8;
+    value += Math.random() * 4;
 
     if (value >= 95) {
       value = 95;
       setProgressText("Almost done...");
       clearInterval(interval);
     } else if (value > 70) {
-      setProgressText("Finalizing notes...");
+      setProgressText("Writing answers...");
     } else if (value > 40) {
-      setProgressText("Processing content...");
+      setProgressText("Preparing questions...");
     } else {
-      setProgressText("Generating notes...");
+      setProgressText("Reading chapters...");
     }
 
     setProgress(Math.floor(value))
@@ -85,6 +103,7 @@ useEffect(() => {
 
 }, [loading]);
 
+const activeHint = EXAM_TYPES.find((e) => e.value === examType)?.hint;
 
   return (
     <motion.div 
@@ -100,50 +119,83 @@ useEffect(() => {
         space-y-6 
         text-white
         ">
-             <input type="text" className='w-full p-3 rounded-xl
-            bg-white/10 backdrop-blur-lg
-            border border-white/20
-            placeholder-gray-400
-            text-white
-            focus:outline-none focus:ring-white/30' 
-            placeholder='Enter topic (e.g. web Development)'
-            onChange={(e)=>setTopic(e.target.value)}
-            value={topic}
-            />
-            <input type="text" className='w-full p-3 rounded-xl
-            bg-white/10 backdrop-blur-lg
-            border border-white/20
-            placeholder-gray-400
-            text-white
-            focus:outline-none focus:ring-white/30' 
-            placeholder='Class / Level'
-            onChange={(e)=>setClassLevel(e.target.value)}
-            value={classLevel}
-            />
-            <input type="text" className='w-full p-3 rounded-xl
-            bg-white/10 backdrop-blur-lg
-            border border-white/20
-            placeholder-gray-400
-            text-white
-            focus:outline-none focus:ring-white/30' 
-            placeholder='Exam Type (e.g. CSE, EEE, BBA)'
-            onChange={(e)=>setExamType(e.target.value)}
-            value={examType}
-            />
-            <div className="flex flex-col md:flex-row gap-6">
-          <Toggle label="Exam Revision Mode" checked={revisionMode}
-          onChange={() => setRevisionMode(!revisionMode)}/>
-      <Toggle 
-      label="Include Diagram" 
-      checked={includeDiagram}
-      onChange={() => setIncludeDiagram(!includeDiagram)}
-      />
-      <Toggle 
-      label="Include Charts"  
-      checked={includeChart}
-      onChange={() => setIncludeChart(!includeChart)}
-      />
-      </div>
+            {/* 1. SUBJECT (fixed) */}
+            <div>
+              <p className='text-sm text-gray-300 mb-2'>Subject</p>
+              <input type="text" className='w-full p-3 rounded-xl
+              bg-white/10 backdrop-blur-lg
+              border border-white/20
+              text-white cursor-not-allowed opacity-80
+              focus:outline-none' 
+              value={SUBJECT}
+              readOnly
+              />
+            </div>
+
+            {/* 2. CHAPTERS (multiple) */}
+            <div>
+              <div className='flex items-center justify-between mb-2'>
+                <p className='text-sm text-gray-300'>
+                  Chapters <span className='text-gray-500'>({selectedChapters.length} selected)</span>
+                </p>
+                <div className='flex gap-3 text-xs'>
+                  <button type="button" disabled={loading}
+                    onClick={() => setSelectedChapters(CHAPTERS.map((c) => c.id))}
+                    className='text-gray-300 hover:text-white underline-offset-2 hover:underline'>
+                    Select all
+                  </button>
+                  <button type="button" disabled={loading}
+                    onClick={() => setSelectedChapters([])}
+                    className='text-gray-300 hover:text-white underline-offset-2 hover:underline'>
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
+                {CHAPTERS.map((c) => {
+                  const active = selectedChapters.includes(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      disabled={loading}
+                      onClick={() => toggleChapter(c.id)}
+                      className={`text-left px-3 py-2 rounded-xl text-sm border transition
+                      ${active
+                        ? "bg-green-500/20 border-green-400/50 text-green-200"
+                        : "bg-white/5 border-white/15 text-gray-300 hover:bg-white/10"}`}
+                    >
+                      <span className='font-semibold'>Chapter {c.id}</span>
+                      <span className='block text-xs opacity-80'>{c.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. EXAM TYPE */}
+            <div>
+              <p className='text-sm text-gray-300 mb-2'>Exam Type</p>
+              <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
+                {EXAM_TYPES.map((e) => (
+                  <button
+                    key={e.value}
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setExamType(e.value)}
+                    className={`px-3 py-2 rounded-xl text-sm font-medium border transition
+                    ${examType === e.value
+                      ? "bg-white text-black border-white"
+                      : "bg-white/5 border-white/15 text-gray-300 hover:bg-white/10"}`}
+                  >
+                    {e.value}
+                  </button>
+                ))}
+              </div>
+              {activeHint && (
+                <p className='mt-2 text-xs text-gray-400'>{activeHint}</p>
+              )}
+            </div>
 
       <motion.button
       onClick={handleSubmit}
@@ -162,7 +214,7 @@ useEffect(() => {
         : "bg-gradient-to-br from-white to-gray-200 text-black shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
     }
   `}>
-    {loading ? "Generate Notes..." : "Generate Notes"}
+    {loading ? "Generating..." : "Generate Questions"}
 
     </motion.button>
 
@@ -186,48 +238,13 @@ useEffect(() => {
     </div>
 
     <p className="text-xs text-gray-400 text-center">
-      This may take up to 2–5 minutes. Please don't close or refresh the page.
+      This may take a few minutes (Final with many chapters takes longer). Please don't close or refresh the page.
     </p>
    </div>
 )}
 
     </motion.div>
   )
-}
-function Toggle({ label, checked, onChange }) {
-  return (
-    <div
-      className="flex items-center gap-4 cursor-pointer select-none"
-      onClick={onChange}
-    >
-      <motion.div
-        animate={{
-          backgroundColor: checked
-            ? "rgba(34,197,94,0.35)"
-            : "rgba(255,255,255,0.15)",
-        }}
-        transition={{ duration: 0.25 }}
-        className="relative w-12 h-6 rounded-full border border-white/20 backdrop-blur-lg"
-      >
-        <motion.div
-          layout
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-[0_5px_15px_rgba(0,0,0,0.5)]"
-          style={{
-            left: checked ? "1.6rem" : "0.25rem",
-          }}
-        />
-      </motion.div>
-
-      <span
-        className={`text-sm transition-colors ${
-          checked ? "text-green-300" : "text-gray-300"
-        }`}
-      >
-        {label}
-      </span>
-    </div>
-  );
 }
 
 export default TopicFrom

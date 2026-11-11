@@ -11,16 +11,12 @@ const notesSchema = new mongoose.Schema({
     type: String,
     required: true
    },
-
-   classLevel: String,
+   chapters: [String],   
    examType: String,
     revisionMode: {
         type: Boolean,
         default: false
     },
-    includeDiagram: Boolean,
-    includeChart: Boolean,
-
     content: {
         type : mongoose.Schema.Types.Mixed, //API response (string/JSON)
         required: true

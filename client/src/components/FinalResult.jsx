@@ -3,7 +3,6 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown'
 import MermaidSetup from './MermaidSetup';
 import RechartSetUp from './RechartSetUp';
-import { downloadPdf } from '../services/api';
 
 
 const markDownComponent = {
@@ -37,7 +36,7 @@ const markDownComponent = {
     ),
 }
 
-function FinalResult({result}) {
+function LegacyResult({result}) {
     const [quickRevision, setQuickRevision] = useState(false);
 
 
@@ -74,8 +73,7 @@ function FinalResult({result}) {
                             ? "bg-green-600 text-white"
                             : "bg-green-100 text-green-700 hover:bg-green-200"}
             `}> {quickRevision ? "Exit Revision Mode" : "Quick Revision (5 min)"}</button>
-                <button onClick={()=>downloadPdf(result)}
-                 className='px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700'>
+                <button className='px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700'>
                         ⬇️ Download PDF
                 </button>
             </div>
@@ -219,7 +217,156 @@ function SectionHeader({ icon, title, color }) {
     )
 }
 
+const answerMarkdown = {
+    ...markDownComponent,
+    p: ({ children }) => (
+        <p className="text-gray-700 leading-relaxed mb-2">{children}</p>
+    ),
+    ol: ({ children }) => (
+        <ol className="list-decimal ml-6 space-y-1 text-gray-700 mb-2">{children}</ol>
+    ),
+    strong: ({ children }) => (
+        <strong className="font-semibold text-gray-900">{children}</strong>
+    ),
+    pre: ({ children }) => (
+        <pre className="bg-gray-900 text-gray-100 text-sm rounded-lg p-3 my-3 overflow-x-auto">{children}</pre>
+    ),
+    code: ({ children }) => (
+        <code className="font-mono text-[0.85em] bg-gray-100 text-pink-700 px-1 rounded">{children}</code>
+    ),
+}
 
+const LETTERS = ["A", "B", "C", "D"]
+
+function ExamResult({ result }) {
+    const [showAnswers, setShowAnswers] = useState(true);
+    const definitions = result.definitions || []
+    const fiveMark = result.fiveMarkQuestions || []
+    const medium = result.mediumQuestions || []
+    const hard = result.hardQuestions || []
+    const mcqs = result.mcqs || []
+    const nothing = !definitions.length && !fiveMark.length && !medium.length && !hard.length && !mcqs.length
+
+    return (
+        <div className='mt-6 p-3 space-y-10 bg-white'>
+
+            <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-4'>
+                <div>
+                    <h2 className='text-3xl font-bold
+                    bg-gradient-to-r from-indigo-600 to-purple-600
+                    bg-clip-text text-transparent'>
+                        📘 {result.examType} Questions
+                    </h2>
+                    <p className='text-sm text-gray-500 mt-1'>{result.subject}</p>
+                    <div className='flex flex-wrap gap-2 mt-3'>
+                        {(result.chapters || []).map((c, i) => (
+                            <span key={i} className='text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100'>
+                                {c}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+                <button
+                    onClick={() => setShowAnswers(!showAnswers)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition shrink-0
+                    ${showAnswers
+                        ? "bg-green-600 text-white"
+                        : "bg-green-100 text-green-700 hover:bg-green-200"}`}
+                >
+                    {showAnswers ? "Hide Answers" : "Show Answers"}
+                </button>
+            </div>
+
+            {nothing && (
+                <p className='text-gray-500'>No questions were generated. Please try again.</p>
+            )}
+
+            {definitions.length > 0 && (
+                <section>
+                    <SectionHeader icon="📖" title={`Definitions (${definitions.length})`} color="blue" />
+                    <ol className='space-y-3'>
+                        {definitions.map((d, i) => (
+                            <li key={i} className='rounded-xl border border-gray-200 p-4'>
+                                <p className='font-semibold text-gray-900'>{i + 1}. {d.term}</p>
+                                {d.chapter && <p className='text-xs text-gray-400 mb-1'>{d.chapter}</p>}
+                                {showAnswers && <p className='text-gray-700 leading-relaxed'>{d.definition}</p>}
+                            </li>
+                        ))}
+                    </ol>
+                </section>
+            )}
+
+            <QuestionSection icon="📝" title="5 Marks Questions" color="purple" items={fiveMark} showAnswers={showAnswers} />
+            <QuestionSection icon="📚" title="Medium Questions" color="green" items={medium} showAnswers={showAnswers} />
+            <QuestionSection icon="🔥" title="Hard Questions" color="rose" items={hard} showAnswers={showAnswers} />
+
+            {mcqs.length > 0 && (
+                <section>
+                    <SectionHeader icon="✅" title={`MCQ (${mcqs.length})`} color="cyan" />
+                    <ol className='space-y-4'>
+                        {mcqs.map((m, i) => (
+                            <li key={i} className='rounded-xl border border-gray-200 p-4'>
+                                <p className='font-semibold text-gray-900'>{i + 1}. {m.question}</p>
+                                <ul className='mt-3 space-y-2'>
+                                    {m.options.map((o, j) => {
+                                        const correct = showAnswers && j === m.answerIndex
+                                        return (
+                                            <li key={j} className={`px-3 py-2 rounded-lg text-sm border
+                                            ${correct
+                                                ? "bg-green-50 border-green-300 text-green-800 font-medium"
+                                                : "bg-gray-50 border-gray-200 text-gray-700"}`}>
+                                                <span className='font-semibold mr-2'>{LETTERS[j]}.</span>{o}
+                                                {correct && <span className='ml-2'>✔</span>}
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                                {showAnswers && (
+                                    <p className='mt-3 text-sm text-gray-600'>
+                                        <span className='font-semibold text-green-700'>Answer: {LETTERS[m.answerIndex]}.</span>{" "}
+                                        {m.explanation}
+                                    </p>
+                                )}
+                            </li>
+                        ))}
+                    </ol>
+                </section>
+            )}
+
+        </div>
+    )
+}
+
+function QuestionSection({ icon, title, color, items, showAnswers }) {
+    if (!items || items.length === 0) return null
+    return (
+        <section>
+            <SectionHeader icon={icon} title={`${title} (${items.length})`} color={color} />
+            <ol className='space-y-5'>
+                {items.map((q, i) => (
+                    <li key={i} className='rounded-xl border border-gray-200 p-4'>
+                        <p className='font-semibold text-gray-900'>{i + 1}. {q.question}</p>
+                        {q.chapter && <p className='text-xs text-gray-400 mt-1'>{q.chapter}</p>}
+                        {showAnswers && (
+                            <div className='mt-3 rounded-lg bg-gray-50 border border-gray-100 p-4'>
+                                <p className='text-xs font-semibold text-indigo-600 mb-2'>ANSWER</p>
+                                <ReactMarkdown components={answerMarkdown}>{q.answer}</ReactMarkdown>
+                            </div>
+                        )}
+                    </li>
+                ))}
+            </ol>
+        </section>
+    )
+}
+
+// Notun shape (examType ache) hole ExamResult, na hole purono LegacyResult
+function FinalResult({result}) {
+    if (result?.examType) {
+        return <ExamResult result={result} />
+    }
+    return <LegacyResult result={result} />
+}
 
 
 export default FinalResult
