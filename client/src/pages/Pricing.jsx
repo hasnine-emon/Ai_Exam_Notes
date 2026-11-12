@@ -1,47 +1,47 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import axios from "axios";
 import { serverUrl } from "../App";
 
-
 function Pricing() {
   const navigate = useNavigate();
   const [selectedPrice, setSelectedPrice] = useState(null);
   const [paying, setPaying] = useState(false);
   const [payingAmount, setPayingAmount] = useState(null);
+
   const handlePaying = async (amount) => {
     try {
       setPayingAmount(amount);
       setPaying(true);
 
-      const result = await axios.post(serverUrl + "/api/credit/order" , {amount} , {withCredentials:true})
+      const result = await axios.post(
+        serverUrl + "/api/credit/order",
+        { amount },
+        { withCredentials: true }
+      );
 
-    if(result.data.url){
-      window.location.href = result.data.url
+      if (result.data.url) {
+        window.location.href = result.data.url;
+      }
+
+      setPaying(false);
+    } catch (error) {
+      setPaying(false);
+      console.log(error);
     }
+  };
 
-        setPaying(false)
-
-
-
-  } catch (error) {
-        setPaying(false)
-        console.log(error)
-  }
-
-
-  }
-  
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10 relative">
-      <button
-        onClick={() => navigate("/")}
-        className="flex items-center gap-2 text-gray-600 hover:text-black mb-6"
-      >
-        ⬅️ Back
-      </button>
-
+    <button
+  onClick={() => navigate("/")}
+  className="flex items-center gap-2 mb-6 px-4 py-2 rounded-lg bg-black text-white font-medium hover:bg-gray-800 transition"
+>
+  <span>←</span>
+  <span>Back</span>
+</button>
 
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -54,11 +54,10 @@ function Pricing() {
         </p>
       </motion.div>
 
-
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <PricingCard
           title="Starter"
-          price="₹100"
+          price="$1"
           amount={100}
           credits="50 Credits"
           description="Perfect for quick revisions"
@@ -74,9 +73,10 @@ function Pricing() {
           paying={paying}
           payingAmount={payingAmount}
         />
+
         <PricingCard
           title="popular"
-          price="₹200"
+          price="$2"
           amount={200}
           credits="200 Credits"
           description="Best for students who want to maximize their learning"
@@ -92,9 +92,10 @@ function Pricing() {
           paying={paying}
           payingAmount={payingAmount}
         />
+
         <PricingCard
           title="Premium"
-          price="₹500"
+          price="$5"
           amount={500}
           credits="500 Credits"
           description="For serious learners who want the best experience"
@@ -115,7 +116,6 @@ function Pricing() {
   );
 }
 
-
 function PricingCard({
   title,
   price,
@@ -132,6 +132,7 @@ function PricingCard({
 }) {
   const isSelected = selectedPrice === amount;
   const isPayingThisCard = paying && payingAmount === amount;
+
   return (
     <motion.div
       onClick={() => setSelectedPrice(amount)}
@@ -140,6 +141,7 @@ function PricingCard({
         relative cursor-pointer
         rounded-xl p-6 bg-white
         border transition
+        flex flex-col h-full
         ${
           isSelected
             ? "border-black"
@@ -155,22 +157,20 @@ function PricingCard({
         </span>
       )}
 
-
       {isSelected && (
         <span className="absolute top-4 right-4 text-xs px-2 py-1 rounded bg-black text-white">
           Selected
         </span>
       )}
 
-
       <h2 className="text-xl font-semibold">{title}</h2>
-      <p className="text-sm text-gray-500 mt-1">{description}</p>
-
+      <p className="text-sm text-gray-500 mt-1 min-h-[40px]">{description}</p>
 
       <div className="mt-4">
         <p className="text-3xl font-bold">{price}</p>
         <p className="text-sm text-indigo-600">{credits}</p>
       </div>
+
       <button
         disabled={isPayingThisCard}
         onClick={(e) => {
@@ -187,8 +187,9 @@ function PricingCard({
                 : "bg-indigo-600 text-white hover:bg-indigo-700"
           }
         `}
-      >{isPayingThisCard ? "Processing..." : "Buy Now"}</button>
-
+      >
+        {isPayingThisCard ? "Processing..." : "Buy Now"}
+      </button>
 
       <ul className="mt-5 space-y-2 text-sm text-gray-600">
         {features.map((f, i) => (
@@ -201,6 +202,5 @@ function PricingCard({
     </motion.div>
   );
 }
-
 
 export default Pricing;
