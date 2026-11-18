@@ -17,6 +17,7 @@ function History() {
 
   const [selectedNote, setSelectedNote] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [noteError, setNoteError] = useState("");
   
   useEffect(() => {
     const myNotes = async () => {
@@ -33,6 +34,8 @@ function History() {
   }, [])
   const openNotes = async (noteId) => {
     setLoading(true)
+    setNoteError("")
+    setSelectedNote(null)
     setActiveNoteId(noteId)
     try {
       const res = await axios.get(serverUrl + `/api/notes/${noteId}`, { withCredentials: true })
@@ -41,6 +44,7 @@ function History() {
       setLoading(false)
     } catch (error) {
       console.log(error)
+      setNoteError("Could not open this note. Please try again.")
       setLoading(false)
     }
 
@@ -199,8 +203,8 @@ overflow-y-auto'>
       >
         {loading && <p className="text-center text-gray-500">Loading notes...</p>}
         {!loading && !selectedNote && (
-          <div className="h-full flex items-center justify-center text-gray-400">
-            Select a topic from the Sidebar
+          <div className={`h-full flex items-center justify-center ${noteError ? "text-red-500" : "text-gray-400"}`}>
+            {noteError || "Select a topic from the Sidebar"}
           </div>
         )}
 
@@ -214,4 +218,3 @@ overflow-y-auto'>
 }
 
 export default History
-

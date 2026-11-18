@@ -1,8 +1,8 @@
-import React from 'react'
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown'
 import MermaidSetup from './MermaidSetup';
 import RechartSetUp from './RechartSetUp';
+import { downloadPdf } from '../services/api';
 
 
 const markDownComponent = {
@@ -240,6 +240,21 @@ const LETTERS = ["A", "B", "C", "D"]
 
 function ExamResult({ result }) {
     const [showAnswers, setShowAnswers] = useState(true);
+    const [downloading, setDownloading] = useState(false);
+
+    // Answer shoho puro generated question PDF hoye download hobe
+    const handleDownload = async () => {
+        try {
+            setDownloading(true)
+            await downloadPdf(result)
+        } catch (error) {
+            console.log(error)
+            alert("PDF download failed. Please try again.")
+        } finally {
+            setDownloading(false)
+        }
+    }
+
     const definitions = result.definitions || []
     const fiveMark = result.fiveMarkQuestions || []
     const medium = result.mediumQuestions || []
@@ -266,15 +281,25 @@ function ExamResult({ result }) {
                         ))}
                     </div>
                 </div>
-                <button
-                    onClick={() => setShowAnswers(!showAnswers)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition shrink-0
-                    ${showAnswers
-                        ? "bg-green-600 text-white"
-                        : "bg-green-100 text-green-700 hover:bg-green-200"}`}
-                >
-                    {showAnswers ? "Hide Answers" : "Show Answers"}
-                </button>
+                <div className='flex gap-3 shrink-0'>
+                    <button
+                        onClick={() => setShowAnswers(!showAnswers)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition
+                        ${showAnswers
+                            ? "bg-green-600 text-white"
+                            : "bg-green-100 text-green-700 hover:bg-green-200"}`}
+                    >
+                        {showAnswers ? "Hide Answers" : "Show Answers"}
+                    </button>
+                    <button
+                        onClick={handleDownload}
+                        disabled={downloading}
+                        className='px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white
+                        hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed'
+                    >
+                        {downloading ? "Preparing PDF..." : "⬇️ Download PDF"}
+                    </button>
+                </div>
             </div>
 
             {nothing && (
@@ -360,7 +385,7 @@ function QuestionSection({ icon, title, color, items, showAnswers }) {
     )
 }
 
-// Notun shape (examType ache) hole ExamResult, na hole purono LegacyResult
+
 function FinalResult({result}) {
     if (result?.examType) {
         return <ExamResult result={result} />
